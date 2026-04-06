@@ -1,2 +1,2 @@
-boat-remove-delay-ticks: 100
-log-boat-damage: true
+boat-remove-delay-ticks: 10
+log-boat-damage: false

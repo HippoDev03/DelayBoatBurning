@@ -1,6 +1,8 @@
 package net.mwtw.delayBoatBuring;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Boat;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.EventHandler;
@@ -22,8 +24,7 @@ public final class DelayBoatBuring extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        boatRemoveDelayTicks = Math.max(0L, getConfig().getLong("boat-remove-delay-ticks", 100L));
-        logBoatDamage = getConfig().getBoolean("log-boat-damage", true);
+        reloadSettings();
         Bukkit.getPluginManager().registerEvents(this, this);
         getLogger().info("DelayBoatBuring enabled. Delay ticks: " + boatRemoveDelayTicks + ", logging: " + logBoatDamage);
         if (logBoatDamage) {
@@ -34,6 +35,24 @@ public final class DelayBoatBuring extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!command.getName().equalsIgnoreCase("dbb")) return false;
+        if (args.length != 1 || !args[0].equalsIgnoreCase("reload")) {
+            sender.sendMessage("Usage: /dbb reload");
+            return true;
+        }
+        if (!sender.hasPermission("delayboatburing.reload")) {
+            sender.sendMessage("You do not have permission to use this command.");
+            return true;
+        }
+
+        reloadConfig();
+        reloadSettings();
+        sender.sendMessage("DelayBoatBuring reloaded. Delay ticks: " + boatRemoveDelayTicks + ", logging: " + logBoatDamage);
+        return true;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
@@ -132,5 +151,10 @@ public final class DelayBoatBuring extends JavaPlugin implements Listener {
     private boolean isBoatInLava(Boat boat) {
         return boat.getLocation().getBlock().isLiquid()
                 && boat.getLocation().getBlock().getType().name().contains("LAVA");
+    }
+
+    private void reloadSettings() {
+        boatRemoveDelayTicks = Math.max(0L, getConfig().getLong("boat-remove-delay-ticks", 100L));
+        logBoatDamage = getConfig().getBoolean("log-boat-damage", true);
     }
 }

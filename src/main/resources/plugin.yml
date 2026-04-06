@@ -4,3 +4,14 @@ version: '$version'
 main: net.mwtw.delayBoatBuring.DelayBoatBuring
 api-version: '1.21'
 load: STARTUP
+
+commands:
+  dbb:
+    description: DelayBoatBuring commands
+    usage: /dbb reload
+    permission: delayboatburing.reload
+
+permissions:
+  delayboatburing.reload:
+    description: Allows reloading DelayBoatBuring config
+    default: op
