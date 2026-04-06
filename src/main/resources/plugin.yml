@@ -1,0 +1,6 @@
+name: DelayBoatBuring
+version: '$version'
+
+main: net.mwtw.delayBoatBuring.DelayBoatBuring
+api-version: '1.21'
+load: STARTUP
